@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import styled from "styled-components";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
-import { addTodo, removeTodo } from "../redux/todoSlice";
+import { addTodo, removeTodo, setTodoStatus } from "../redux/todoSlice";
 import { RootState } from "../redux/store/store";
 import { useState } from "react";
 
@@ -25,7 +25,7 @@ const AddButton = styled.button`
   border-radius: 16px;
   cursor: pointer;
   background-color: #80bd68;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   color: #ffffff;
   font-size: 20px;
   font-weight: 700;
@@ -40,17 +40,21 @@ const RemoveButton = styled.button`
   border-radius: 8px;
   cursor: pointer;
   background-color: #f0899d;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   color: #ffffff;
   font-size: 16px;
   font-weight: 700;
   border: none;
   transition: 0.3s all;
+  white-space: nowrap;
   &:hover {
     opacity: 0.7;
   }
-`;  
-const ConfiguringItem = styled.li`
+`;
+const DoneButton = styled(RemoveButton)`
+  background-color: #80bd68;
+`;
+const ConfiguringItem = styled.li<{ $doned?: boolean }>`
   display: flex;
   padding: 20px;
   justify-content: flex-end;
@@ -58,12 +62,14 @@ const ConfiguringItem = styled.li`
   align-items: center;
   border: 1px solid #42aaff;
   border-radius: 8px;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
+  background-color: ${(props) => (props.$doned ? "#d4d4d4" : "white")};
 `;
 const ConfiguringContainer = styled.ul`
   display: flex;
-  column-gap: 15px;
-  padding: 0;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 32px;
   margin: 0;
 `;
 
@@ -71,6 +77,7 @@ const Configure: FunctionComponent = () => {
   const todoList = useAppSelector((state: RootState) => state);
   const dispatch = useAppDispatch();
   const [todoDescription, setTodoDescription] = useState("");
+
   return (
     <Wrapper>
       <Area
@@ -80,16 +87,18 @@ const Configure: FunctionComponent = () => {
         value={todoDescription}
       ></Area>
       <AddButton
-        onClick={() => {
-          dispatch(addTodo(todoDescription));
-          setTodoDescription("");
+        onClick={function () {
+          if (todoDescription) {
+            dispatch(addTodo(todoDescription));
+            setTodoDescription("");
+          }
         }}
       >
         Add task
       </AddButton>
       <ConfiguringContainer>
         {todoList.map((todos: any) => (
-          <ConfiguringItem key={todos.id}>
+          <ConfiguringItem $doned={todos.doned} key={todos.id}>
             {todos.text}
             <RemoveButton
               onClick={() => {
@@ -98,6 +107,13 @@ const Configure: FunctionComponent = () => {
             >
               Remove task
             </RemoveButton>
+            <DoneButton
+              onClick={() => {
+                dispatch(setTodoStatus({ id: todos.id, doned: !todos.doned }));
+              }}
+            >
+              {todos.doned ? "Undo" : "Completed"}
+            </DoneButton>
           </ConfiguringItem>
         ))}
       </ConfiguringContainer>
