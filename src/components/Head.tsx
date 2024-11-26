@@ -42,7 +42,7 @@ const Head: FunctionComponent = () => {
     <Header>
       <Menu>
         <MenuPoint>
-          <StyledLink to={"/see"}>List</StyledLink>
+          <StyledLink to={"/"}>List</StyledLink>
         </MenuPoint>
         <MenuPoint>
           <StyledLink to={"/configure"}>Edit</StyledLink>

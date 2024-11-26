@@ -10,7 +10,7 @@ const Root: FunctionComponent = () => {
     <BrowserRouter basename="/">
       <Head />
       <Routes>
-        <Route path="/see" element={<See />} />
+        <Route path="/" element={<See />} />
         <Route path="/configure" element={<Configure />} />
       </Routes>
     </BrowserRouter>
