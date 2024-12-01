@@ -1,10 +1,9 @@
 import { FunctionComponent } from "react";
 import styled from "styled-components";
-import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { useAppSelector } from "../redux/hooks";
 import { RootState } from "../redux/store/store";
 const See: FunctionComponent = () => {
   const todoList = useAppSelector((state: RootState) => state);
-  const dispatch = useAppDispatch();
 
   const ConfiguringItem = styled.li`
     display: flex;
